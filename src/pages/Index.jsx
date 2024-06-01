@@ -1,23 +1,32 @@
-import { Box, Container, VStack, Heading, Text, SimpleGrid, Image, Flex, Link, Input } from "@chakra-ui/react";
+import { Box, Container, VStack, Heading, Text, SimpleGrid, Image, Flex, Link, Input, Select } from "@chakra-ui/react";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
 const products = [
-  { id: 1, name: "Smartphone", price: "$699", image: "/images/smartphone.jpg" },
-  { id: 2, name: "Laptop", price: "$999", image: "/images/laptop.jpg" },
-  { id: 3, name: "Headphones", price: "$199", image: "/images/headphones.jpg" },
+  { id: 1, name: "Smartphone", category: "Smartphones", price: "$699", image: "/images/smartphone.jpg" },
+  { id: 2, name: "Laptop", category: "Laptops", price: "$999", image: "/images/laptop.jpg" },
+  { id: 3, name: "Headphones", category: "Headphones", price: "$199", image: "/images/headphones.jpg" },
 ];
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value.toLowerCase());
   };
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchQuery)
-  );
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
+
+  const filteredProducts = products.filter((product) => {
+    return (
+      product.name.toLowerCase().includes(searchQuery) &&
+      (selectedCategory === "" || product.category === selectedCategory)
+    );
+  });
+
   return (
     <Container maxW="container.xl" p={4}>
       <Flex as="nav" bg="gray.800" color="white" p={4} justifyContent="space-between">
@@ -41,7 +50,13 @@ const Index = () => {
             onChange={handleSearchChange}
             size="lg"
             variant="filled"
+            mb={4}
           />
+          <Select placeholder="Filter by category" onChange={handleCategoryChange} size="lg" variant="filled">
+            <option value="Smartphones">Smartphones</option>
+            <option value="Laptops">Laptops</option>
+            <option value="Headphones">Headphones</option>
+          </Select>
         </Box>
 
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={8} w="full">
